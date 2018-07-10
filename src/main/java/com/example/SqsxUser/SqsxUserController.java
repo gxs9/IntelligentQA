@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static com.example.Utils.ToHash.toHash;
@@ -63,11 +65,15 @@ public class SqsxUserController {
     }
 
     @PostMapping("sign/in")
-    public JsonResult login(@RequestParam("username") String username, @RequestParam("password") String password) {//登陆，验证结果返回：-1表示失败，1表示成功
+    public JsonResult login(@RequestParam("username") String username, @RequestParam("password") String password,HttpServletRequest request) {//登陆，验证结果返回：-1表示失败，1表示成功
 
         SqsxUser sqsxUser = sqsxuserRepository.findByUsername(username);
         System.out.println(sqsxUser.getId()+sqsxUser.getUsername()+sqsxUser.getPassword()+sqsxUser.getType()+sqsxUser.getIsdel());
         if (sqsxUser!= null && toHash(password) == sqsxUser.getPassword() && sqsxUser.getIsdel()!=1) {
+            HttpSession session = request.getSession();
+
+            session.setAttribute("currentUser",sqsxUser);
+            System.out.print(session.getAttribute("currentUser"));
             return JsonResult.ok(sqsxUser);
         } else {
                 return JsonResult.refuse();//密码输入错误,状态码：400服务器已经理解请求，但是拒绝执行它。

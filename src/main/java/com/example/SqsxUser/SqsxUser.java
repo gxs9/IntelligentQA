@@ -3,10 +3,11 @@ package com.example.SqsxUser;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 
 @Entity
-public class SqsxUser {
+public class SqsxUser implements Serializable {
 
     @Id
     @GeneratedValue
@@ -61,4 +62,14 @@ public class SqsxUser {
     }
 
 
+    @Override
+    public String toString() {
+        return "SqsxUser{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password=" + password +
+                ", type=" + type +
+                ", isdel=" + isdel +
+                '}';
+    }
 }
